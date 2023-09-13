@@ -11,3 +11,4 @@ NPM
 
 Archive
 ---------
+    https://github.com/yourickds/ds-multi-inputs/releases
