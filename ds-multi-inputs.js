@@ -10,23 +10,29 @@ class CreateDsMultiInputs
     }
 
     createDsMultiInputs(el, params) { 
-        console.log(params);
         let ds_multi_inputs = document.createElement('div');
         ds_multi_inputs.classList.add("ds-multi-inputs");
 
         let items = document.createElement('div');
         items.classList.add("ds-multi-inputs__items");
         for (let i = 0; i < this.#min; i++) {
-            items.append(this.createItem(el));
+            let new_element = this.createItem(el, params);
+            items.append(new_element);
         }
 
         ds_multi_inputs.append(items);
 
         el.after(ds_multi_inputs);
         el.remove();
+
+        if (params !== undefined) {
+            if (params.afterInit !== undefined) {
+                params.afterInit();
+            }
+        }
     }
 
-    createItem(el) {
+    createItem(el, params) {
         let item = document.createElement('div');
         item.classList.add("ds-multi-inputs__items_item");
 
@@ -50,8 +56,15 @@ class CreateDsMultiInputs
         plus.innerText = "+";
         plus.onclick = (event) => {
             event.preventDefault();
-            if (this.#elements < this.#max)
-                item.after(this.createItem(el));
+            if (this.#elements < this.#max || this.#max === null) {
+                let new_element = this.createItem(el, params);
+                item.after(new_element);
+                if (params !== undefined) {
+                    if (params.afterCreateItem !== undefined) {
+                        params.afterCreateItem(new_element);
+                    }
+                }
+            }
         }
 
         actions.append(minus);
@@ -64,19 +77,28 @@ class CreateDsMultiInputs
 
         this.#elements++;
 
-        console.log(this.#elements);
-
         return item;
     }
 }
 
-// Element.prototype.ds_multi_inputs = function(params) {
-//     new CreateDsMultiInputs.createDsMultiInputs(this, params);
-// }
+Element.prototype.ds_multi_inputs = function(params) {
+
+    let min = this.getAttribute('data-min') === null ? 1 : this.getAttribute('data-min');
+    let max = this.getAttribute('data-max') === null ? 1 : this.getAttribute('data-max');
+
+    let create = new CreateDsMultiInputs(min, max);
+
+    create.createDsMultiInputs(this, params);
+}
 
 NodeList.prototype.ds_multi_inputs = function(params) {
     this.forEach((el) => {
-        let create = new CreateDsMultiInputs(params.min, params.max);
+        
+        let min = el.getAttribute('data-min') === null ? 1 : el.getAttribute('data-min');
+        let max = el.getAttribute('data-max') === null ? 1 : el.getAttribute('data-max');
+
+        let create = new CreateDsMultiInputs(min, max);
+
         create.createDsMultiInputs(el, params);
     })
 }

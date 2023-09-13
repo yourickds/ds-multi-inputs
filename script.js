@@ -1,19 +1,15 @@
 document.addEventListener('DOMContentLoaded', function(){
-    document.querySelectorAll('#ffff')
-        .ds_multi_inputs({
-            min: 1,
-            max: 5
-        });
+    document.querySelectorAll('.ds-multi-inputs')
+        .ds_multi_inputs();
 
-    document.querySelectorAll('#ss')
+    document.querySelectorAll('.select2')
         .ds_multi_inputs({
-            min: 2,
-            max: 3
-        });
-
-    document.querySelectorAll('#pppp')
-        .ds_multi_inputs({
-            min: 5,
-            max: 8
+            afterInit: function() {
+                $('.select2').select2();
+            },
+            afterCreateItem: function(el) {
+                // el - элемент который был создан
+                $('.select2').select2();
+            }
         });
 });
