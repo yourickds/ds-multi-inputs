@@ -1,6 +1,6 @@
 {
   "name": "ds-multi-inputs",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Append inputs",
   "main": "dist/js/index.js",
   "scripts": {
