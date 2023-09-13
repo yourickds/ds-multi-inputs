@@ -44,6 +44,18 @@ class CreateDsMultiInputs
 
         let minus = document.createElement('button');
         minus.innerText = "-";
+
+        if(params !== undefined) {
+            if (params.buttons !== undefined) {
+                if (params.buttons.removeItem !== undefined) {
+                    if (params.buttons.removeItem.className !== undefined)
+                        minus.className = params.buttons.removeItem.className;
+                    if (params.buttons.removeItem.text !== undefined)
+                        minus.innerText = params.buttons.removeItem.text;
+                }
+            }
+        }
+
         minus.onclick = (event) => {
             event.preventDefault();
             if (this.#elements > this.#min) {
@@ -54,6 +66,18 @@ class CreateDsMultiInputs
 
         let plus = document.createElement('button');
         plus.innerText = "+";
+
+        if(params !== undefined) {
+            if (params.buttons !== undefined) {
+                if (params.buttons.createItem !== undefined) {
+                    if (params.buttons.createItem.className !== undefined)
+                        plus.className = params.buttons.createItem.className;
+                    if (params.buttons.createItem.text !== undefined)
+                        plus.innerText = params.buttons.createItem.text;
+                }
+            }
+        }
+
         plus.onclick = (event) => {
             event.preventDefault();
             if (this.#elements < this.#max || this.#max === null) {
