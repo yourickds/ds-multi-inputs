@@ -3,20 +3,28 @@ class CreateDsMultiInputs
     #min;
     #max;
     #elements = 0;
+    #hash = '';
+    #increment = 1;
+    #template = '';
 
-    constructor(min = 1, max = null) {
+    constructor(min = 1, max = null, template) {
         this.#min = min;
         this.#max = max;
+        this.#hash = Math.random().toString(36).slice(2, 7);
+        this.#template = template;
     }
 
-    createDsMultiInputs(el, params) { 
+    createDsMultiInputs(el, params) {
         let ds_multi_inputs = document.createElement('div');
         ds_multi_inputs.classList.add("ds-multi-inputs");
 
         let items = document.createElement('div');
+        let ids = [];
         items.classList.add("ds-multi-inputs__items");
         for (let i = 0; i < this.#min; i++) {
-            let new_element = this.createItem(el, params);
+            let createItem =  this.createItem(params);
+            ids.push(createItem.id);
+            let new_element = createItem.item
             items.append(new_element);
         }
 
@@ -27,12 +35,12 @@ class CreateDsMultiInputs
 
         if (params !== undefined) {
             if (params.afterInit !== undefined) {
-                params.afterInit();
+                params.afterInit(ids);
             }
         }
     }
 
-    createItem(el, params) {
+    createItem(params) {
         let item = document.createElement('div');
         item.classList.add("ds-multi-inputs__items_item");
 
@@ -81,11 +89,13 @@ class CreateDsMultiInputs
         plus.onclick = (event) => {
             event.preventDefault();
             if (this.#elements < this.#max || this.#max === null) {
-                let new_element = this.createItem(el, params);
+                let createItem = this.createItem(params);
+                let new_element = createItem.item;
+                let id = createItem.id;
                 item.after(new_element);
                 if (params !== undefined) {
                     if (params.afterCreateItem !== undefined) {
-                        params.afterCreateItem(new_element);
+                        params.afterCreateItem(new_element, id);
                     }
                 }
             }
@@ -94,14 +104,25 @@ class CreateDsMultiInputs
         actions.append(minus);
         actions.append(plus);
 
-        input.append(el.cloneNode(true));
+        let id = this.#increment+'-'+this.#hash;
+        //replace
+        
+        let create_template = this.#template.replace(/:id:/gi, id);
+
+        let domParser = new DOMParser();
+        let doc = domParser.parseFromString(create_template, 'text/html');
+        let clone_element = doc.body.childNodes[0];
+        
+        clone_element.setAttribute('data-ds-multi-inputs-id', id);
+        input.append(clone_element);
 
         item.append(input);
         item.append(actions);
 
         this.#elements++;
+        this.#increment++;
 
-        return item;
+        return {item, id};
     }
 }
 
@@ -109,19 +130,32 @@ Element.prototype.ds_multi_inputs = function(params) {
 
     let min = this.getAttribute('data-min') === null ? 1 : this.getAttribute('data-min');
     let max = this.getAttribute('data-max') === null ? 1 : this.getAttribute('data-max');
+    let template = el.outerHTML;
 
-    let create = new CreateDsMultiInputs(min, max);
+        if (params !== undefined) {
+            if (params.template !== undefined) {
+                template = params.template;
+            }
+        }
+
+    let create = new CreateDsMultiInputs(min, max, template);
 
     create.createDsMultiInputs(this, params);
 }
 
 NodeList.prototype.ds_multi_inputs = function(params) {
     this.forEach((el) => {
-        
         let min = el.getAttribute('data-min') === null ? 1 : el.getAttribute('data-min');
         let max = el.getAttribute('data-max') === null ? 1 : el.getAttribute('data-max');
+        let template = el.outerHTML;
 
-        let create = new CreateDsMultiInputs(min, max);
+        if (params !== undefined) {
+            if (params.template !== undefined) {
+                template = params.template;
+            }
+        }
+    
+        let create = new CreateDsMultiInputs(min, max, template);
 
         create.createDsMultiInputs(el, params);
     })

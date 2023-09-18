@@ -10,6 +10,12 @@ document.addEventListener('DOMContentLoaded', function(){
                     className: "btn btn-success",
                     text: "Добавить элемент"
                 }
+            },
+            afterInit: function(ids) {
+                console.log(ids);
+            },
+            afterCreateItem: function(el, id) {
+                console.log(id)
             }
         });
 
@@ -28,11 +34,25 @@ document.addEventListener('DOMContentLoaded', function(){
                     theme: "bootstrap-5"
                 });
             },
-            afterCreateItem: function(el) {
+            afterCreateItem: function(el, template) {
+                console.log(template);
                 // el - элемент который был создан
                 $('.select2').select2({
                     theme: "bootstrap-5"
                 });
+            }
+        });
+
+    document.querySelectorAll('.ds-multi-inputs-template')
+        .ds_multi_inputs({
+            template: '<div><input class="form-control" type="text" placeholder="Test Template" name="test[:id:]"/></div>',
+            buttons: {
+                removeItem: {
+                    className: "btn btn-danger"
+                },
+                createItem: {
+                    className: "btn btn-success"
+                }
             }
         });
 });

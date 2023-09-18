@@ -29,7 +29,7 @@
             <input type="text" class="form-control ds-multi-inputs" data-min="5" data-max="8" placeholder="name@example.com">
         </div>
         
-        <fieldset>
+        <fieldset class="mb-3">
             <legend>Select2</legend>
             <select name="" class="form-select select2" data-min="2" data-max="12">
                 <option value="">Новосибирск</option>
@@ -40,6 +40,19 @@
                 <option value="">Омск</option>
             </select>
         </fieldset>
+
+        <div class="mb-3">
+            <label class="form-label">1 to 5 two fields</label>
+            <div class="ds-multi-inputs" data-max="5" style="display:flex">
+                <input type="text" class="form-control" placeholder="name@example.com" name="socials[:id:][title]" style="margin-right:10px">
+                <input type="text" class="form-control" placeholder="name@example.com" name="socials[:id:][value]">
+            </div>
+        </div>
+
+        <div class="mb-3">
+            <div class="ds-multi-inputs-template" data-max="5"></div>
+        </div>
+
 
     </div>
 
